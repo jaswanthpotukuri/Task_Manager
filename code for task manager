@@ -1,0 +1,80 @@
+import datetime
+#Dictionary to store daily tasks with completion status
+daily_tasks = {}
+
+def add_or_update_task(date, task, is_completed=False):
+    if date not in daily_tasks:
+        daily_tasks[date] = []
+    task_exists = False
+    for t in daily_tasks[date]:
+        if t['task'] == task:
+            t['is_completed'] = is_completed
+            task_exists = True
+            break
+    if not task_exists:
+        daily_tasks[date].append({'task': task, 'is_completed': is_completed})
+
+def view_daily_progress(date):
+    if date in daily_tasks:
+        completed_tasks = sum(task['is_completed'] for task in daily_tasks[date])
+        total_tasks = len(daily_tasks[date])
+        if total_tasks > 0:
+            percentage_completed = (completed_tasks / total_tasks) * 100
+            return f"On {date}, {percentage_completed:.2f}% of tasks were completed."
+        else:
+            return f"On {date}, there are no tasks."
+    else:
+        return f"No tasks recorded for {date}."
+
+def delete_task(date, task):
+    if date in daily_tasks:
+        daily_tasks[date] = [t for t in daily_tasks[date] if t['task'] != task]
+
+def main():
+    while True:
+        print("\nMenu:")
+        print("1. Add Task")
+        print("2. Mark Task as Completed")
+        print("3. View Daily Progress")
+        print("4. Delete Task")
+        print("5. Exit")
+        
+        choice = input("Enter your choice : ")
+        
+        #add task
+        
+        if choice == '1':
+            date = input("Enter date in YYYY-MM-DD : ")
+            task = input("Enter task : ")
+            add_or_update_task(date, task)
+            print(f"Task '{task}' added/updated for {date}.")
+            
+        #mark as completed   
+        
+        elif choice == '2':
+            date = input("Enter date in YYYY-MM-DD : ")
+            task = input("Enter task to mark as completed : ")
+            add_or_update_task(date, task, is_completed=True)
+            print(f"Task '{task}' marked as completed for {date}.")
+            
+        #view/display   
+            
+        elif choice == '3':
+            date = input("Enter date in YYYY-MM-DD : ")
+            result = view_daily_progress(date)
+            print(result)
+            
+        #delete task
+            
+        elif choice == '4':
+            date = input("Enter date in YYYY-MM-DD : ")
+            task = input("Enter task to delete: ")
+            delete_task(date, task)
+            print(f"Task '{task}' deleted for {date}.")
+        elif choice == '5':
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
